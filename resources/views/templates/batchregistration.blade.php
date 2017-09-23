@@ -9,6 +9,15 @@
 		@include('partials.cardtext')
 		<div class="register-right">
 			<div class="register-in">
+				@if (Session::has('success'))
+					<div class="">
+						<div class="alert alert-success text-center"> <?php echo Session::get('success') ?></div>
+					</div>
+				@elseif (Session::has('fail'))
+					<div class="">
+						<div class="alert alert-danger text-center"> <?php echo Session::get('fail') ?></div>
+					</div>
+				@endif
 				<h2>Request Product Verification Code</h2>
 				<div class="register-form">
 					<form action="{{URL::route('generateVerification')}}" method="post">

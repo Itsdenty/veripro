@@ -102,9 +102,9 @@ class ProductController extends Controller
         }
     }
     public function getTrackingJson($product_id, $first_batch, $last_batch){
-        $product_details = ProductDetails::where('product_id', '=', $product_id)->whereBetween('tracking_number',[$first_batch -1, $last_batch -1])->get();
+        $product_details = ProductDetail::where('product_id', '=', $product_id)->whereBetween('batch_number',[$first_batch -1, $last_batch -1])->get();
         $prod_details = [];
-        if(count($products > 0)){
+        if(count($product_details) > 0){
           foreach($product_details as $product){
               $prod_details[] = ['batch_number' => $product->batch_number, 'tracking_code' => $product->tracking_number];
           }  
@@ -113,7 +113,7 @@ class ProductController extends Controller
     }
     public function verifyProduct ($tracking_number){
         $token = $tracking_number;
-        $product_details = ProductDetails::where('tracking_number', '=', $token)->first();
+        $product_details = ProductDetail::where('tracking_number', '=', $token)->first();
         if(!$product_details && $product_details->id){
             return response()->json(['msg' => "sorry this product is a fake product"]);
         }

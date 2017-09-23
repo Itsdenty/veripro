@@ -25,6 +25,7 @@ Route::get('login', 'UserController@getLogin')->name('getLogin')->middleware('gu
 Route::post('login', 'UserController@postLogin')->name('postLogin')->middleware('guest');
 Route::get('product', 'ProductController@getProduct')->name('getProduct')->middleware('auth');
 Route::get('batches', 'ProductController@getBatches')->name('getBatches')->middleware('auth');
+Route::get('verify/{product_id}/{first_batch}/{last_batch}', 'ProductController@getTrackingJson')->name('getTrackingJson')->middleware('auth');
 Route::post('product', 'ProductController@createProduct')->name('createProduct')->middleware('auth');
 Route::post('batches', 'ProductController@generateVerification')->name('generateVerification')->middleware('auth');
 Route::post('signup', 'UserController@postSignup')->name('postSignup')->middleware('guest');
