@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\ProductDetail;
 use Image;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use URL;
 
 class ProductController extends Controller
 {
@@ -24,7 +26,7 @@ class ProductController extends Controller
             'name' => 'required',
             'product_details' => 'required',
             'product_image' => 'required',
-            'secret_key' => 'required|min:10'
+            'secret_key' => 'required|min:3:max:10'
         );
         $validate = Validator::make($request->all(), $rules);
         if ($validate->fails()) {
@@ -70,14 +72,23 @@ class ProductController extends Controller
         $last_batch = $data['last_batch'];
         $product_id = $data['product_id'];
         $product = Product::find($product_id);
-        $secret = $this->getSalt();
-        $product->secret_key = $secret;
-        $product->update();
+        $secret = $product->secret_key;
+        // $product->secret_key = $secret;
+        // $product->update();
         for($i = $first_batch; $i < $last_batch; $i++){
             $batch_number = $i;
+            $batch = $batch_number . "";
             $track_number = $product->name . '-' . $i;
-            $encrypt = new Encryption;
-            $tracking_number = $encrypt->simple_encrypt($track_number,$secret);
+            $random_n = rand(12345, 99999);
+            $final = time() - $random_n;
+            $algo_number = 0;
+            if($batch_number > $final){
+                $algo_number = $batch_number - $final; 
+            }
+            else{
+                $algo_number = $batch_number + $final;
+            }
+            $tracking_number = $algo_number;
             $data['tracking_number'] = $tracking_number;
             $data['batch_number'] = $batch_number;
             $product_details = new ProductDetail();
