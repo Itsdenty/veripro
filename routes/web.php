@@ -18,7 +18,7 @@
 
 
 Route::get('/', function () {
-    return view('templates.register')->middleware('guest');
+    return view('templates.register');
 });
 
 Route::get('login', 'UserController@getLogin')->name('getLogin')->middleware('guest');
