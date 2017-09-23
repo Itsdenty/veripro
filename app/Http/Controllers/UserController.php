@@ -39,7 +39,6 @@ class UserController extends Controller
 
 	public function postSignup(Request $request)
     {
-        //$state =  (int)Input::get('state');
         $rules = array(
             'company_name' => 'required|string|min:4',
             'official_email' => 'required|unique:users|min:4',
@@ -58,12 +57,8 @@ class UserController extends Controller
             $user = new User();
             $user->fill($data);
             if ($user->save()) {
-                //Mail::to($request->get('email'))->send(new ConfirmAccount($user));
-                
-                // return Redirect::route('getSignup')->with('success', 'you registered successfully please check your email for your account activation mail');
                 return redirect()->route('getLogin')->with('success', 'You have registered successfully');
             } else {
-            //     return Redirect::route('getSignup')->with('fail', 'an error occurred while creating your profile');
                 return  redirect()->back()->with('fail', 'An error occured while trying to sign you up')->withInput();
             }
         }

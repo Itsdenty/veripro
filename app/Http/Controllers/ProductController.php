@@ -26,7 +26,7 @@ class ProductController extends Controller
             'name' => 'required',
             'product_details' => 'required',
             'product_image' => 'required',
-            'secret_key' => 'required|min:3:max:10'
+            'secret_key' => 'required|regex:/^[a-zA-Z]+$/u|min:3:max:10'
         );
         $validate = Validator::make($request->all(), $rules);
         if ($validate->fails()) {
@@ -34,16 +34,13 @@ class ProductController extends Controller
         } else {
         $data = $request->all();
 		$image = $request->file('product_image');
-        // dd($image);
 		$img = str_replace(' ', '-', $image->getClientOriginalName());
 		$cool = strlen($img);
 		if($cool > 40){
           $initial = $cool-30;
           $img = substr($img, $initial);
 		}
-                // dd($img);
 		$imagename = time() . "-" . $img;
-                //dd($imagename);
 		Image::make($image->getRealPath())->resize(640, 480, function ($constraint) {
         $constraint->aspectRatio();})->save(public_path() . '/images/product/' . $imagename);
 		$image_url = '/images/product/' .$imagename;
@@ -59,7 +56,7 @@ class ProductController extends Controller
     }
     public function generateVerification(Request $request){
         $rules = array(
-            'product_id' => 'required',
+            'product_id' => 'required|integer',
             'first_batch' => 'required',
             'last_batch' => 'required',
         );
@@ -73,8 +70,6 @@ class ProductController extends Controller
         $product_id = $data['product_id'];
         $product = Product::find($product_id);
         $secret = $product->secret_key;
-        // $product->secret_key = $secret;
-        // $product->update();
         for($i = $first_batch; $i < $last_batch; $i++){
             $batch_number = $i;
             $batch = $batch_number . "";
@@ -119,15 +114,4 @@ class ProductController extends Controller
         }
         return response()->json(['msg' => 'You have an original ' .$product_details->product->name .' with you, with a batch number of ' .$product->batch_number .' thank you for using veripro']);
     }
-    public function getSalt() {
-     $charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\][{}\'";:?.>,<!@#$%^&*()-_=+|';
-     $randStringLen = 64;
-
-     $randString = "";
-     for ($i = 0; $i < $randStringLen; $i++) {
-         $randString .= $charset[mt_rand(0, strlen($charset) - 1)];
-     }
-
-     return $randString;
-}
 }
