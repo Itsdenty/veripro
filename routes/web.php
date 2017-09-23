@@ -12,5 +12,6 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('templates.register');
 });
+Route::post('login', 'UserController@getLogin')->name('getLogin');
