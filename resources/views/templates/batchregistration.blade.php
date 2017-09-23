@@ -6,7 +6,7 @@
 <!-- section -->
 <section class="register">
 	<div class="register-full">
-		@include('partials.cardtext')
+		@include('partials.cardwords')
 		<div class="register-right">
 			<div class="register-in">
 				@if (Session::has('success'))

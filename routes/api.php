@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/veripro/ussd', ['uses' => 'USSDController@index', 'as'=>'ussd']);
+Route::post('/ussd', ['uses' => 'USSDController@index', 'as'=>'ussd']);
 
 Route::get('verify/{tracking_number}', 'ProductController@verifyProduct')->name('getVerify');
 

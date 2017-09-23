@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-
+use App\ProductDetail;
 
 class USSDController extends Controller
 {
 
 
     public function index(){
+
 
     	$sessionId = request()->input('sessionId');
 
@@ -20,7 +21,7 @@ class USSDController extends Controller
 
     	$text = request()->input('text');
 
-    	if($text = ""){
+    	if($text == ""){
 
     	$response  = "CON please input the product verification number \n";
 
@@ -42,11 +43,15 @@ class USSDController extends Controller
 
     		$response = "END This product with batch number $batch is verified OK!";
 
+    		header('Content-type: text/plain');
+
     		return $response;
 
 
     	}
     }
+
+}
 
    
 
