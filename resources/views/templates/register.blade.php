@@ -12,7 +12,7 @@
 					<input class="text stack" type="text" name="phone" placeholder="Official Mobile Number" required="">
 					<input class="text" type="text" name="address" placeholder="Company Address" required="">
 					<input class="text w3lpass" type="password" name="password" placeholder="Password" required="">
-					<input class="text w3lpass" type="password" name="password" placeholder="Confirm Password" required="">
+					<input class="text w3lpass" type="password" name="password_confirmation" placeholder="Confirm Password" required="">
 					<div class="wthree-text">  
 						<label class="anim">
 							<input type="checkbox" class="checkbox" required="">
