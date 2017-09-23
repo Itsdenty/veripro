@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
     //
-
-
+    public function getLogin(){
+        return view('templates.login');
+    }
     public function postLogin(Request $request){
 		$validate = Validator::make($request->all(), array(
 			'email' => 'required|min:4',
@@ -18,11 +24,11 @@ class UserController extends Controller
 			return back()->withErrors($validate)->withInput();
 		} else {
 			$auth = Auth::attempt(array(
-				'email' => $request->get('email'),
+				'official_email' => $request->get('email'),
 				'password' => $request->get('password')
 			));
 			if ($auth) {
-				return redirect()->intended('user/dashboard')->with('success', 'You have successfully logged in');
+				return redirect()->intended('product')->with('success', 'You have successfully logged in');
 			}
 			else{
 				return back()->with('fail', 'invalid username or password')->withInput();
@@ -48,7 +54,6 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validate)->withInput();
         } else {
             $data = $request->all();
-            $confirmationCode = str_random(30);
             $data['password'] = Hash::make($request->get('password'));
             $user = new User();
             $user->fill($data);
@@ -56,12 +61,20 @@ class UserController extends Controller
                 //Mail::to($request->get('email'))->send(new ConfirmAccount($user));
                 
                 // return Redirect::route('getSignup')->with('success', 'you registered successfully please check your email for your account activation mail');
-                return redirect()->route('login')->withSucess('You have registered successfully');
+                return redirect()->route('getLogin')->with('success', 'You have registered successfully');
             } else {
             //     return Redirect::route('getSignup')->with('fail', 'an error occurred while creating your profile');
-                return  redirect()->back()->withErrors('An error occured while trying to sign you up')->withInput();
+                return  redirect()->back()->with('fail', 'An error occured while trying to sign you up')->withInput();
             }
         }
+
+    }
+
+    public function logout(){
+
+        Auth::logout();
+
+        return redirect('/');
 
     }
 

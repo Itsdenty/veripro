@@ -19,8 +19,8 @@ class CreateProductsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')
 			->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
-            $table->string('security_key');
-            $table->string('product_details');
+            $table->string('secret_key');
+            $table->text('product_details');
             $table->string('product_image');
             $table->timestamps();
         });

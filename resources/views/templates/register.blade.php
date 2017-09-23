@@ -1,18 +1,48 @@
 @extends('layouts.authmaster')
-
+@section('action')
+@include('partials.loginaction')
+@endsection
 @section('body')
 <!-- main -->
 	<div class="main-w3layouts wrapper">
 		<h1>Veripro Sign-up Form</h1>
 		<div class="main-agileinfo">
 			<div class="agileits-top"> 
-				<form action="#" method="post"> 
-					<input class="text" type="text" name="Username" placeholder="Company Name" required="">
-					<input class="text email" type="email" name="email" placeholder="Official Email" required="">
-					<input class="text stack" type="text" name="phone" placeholder="Official Mobile Number" required="">
-					<input class="text" type="text" name="address" placeholder="Company Address" required="">
-					<input class="text w3lpass" type="password" name="password" placeholder="Password" required="">
-					<input class="text w3lpass" type="password" name="password_confirmation" placeholder="Confirm Password" required="">
+				@if (Session::has('success'))
+					<div class="">
+						<div class="alert alert-success text-center"> {{ Session::get('success') }}</div>
+					</div>
+				@elseif (Session::has('fail'))
+					<div class="">
+						<div class="alert alert-danger text-center"> {{ Session::get('fail') }}</div>
+					</div>
+				@endif
+				<form action="{{URL::route('postSignup')}}" method="post"> 
+					<input class="text {{ ($errors->has('company_name')) ? 'has-error' : ''}}" type="text" name="company_name" placeholder="Company Name" required="">
+						@if ($errors->has('company_name'))
+							<span style="color: palevioletred;">{{ $errors->first('company_name') }}</span>
+						@endif
+					<input class="text email {{ ($errors->has('email')) ? 'has-error' : ''}}" type="email" name="official_email" placeholder="Official Email" required="">
+						@if ($errors->has('email'))
+							<span style="color: palevioletred;">{{ $errors->first('email') }}</span>
+						@endif
+					<input class="text stack {{ ($errors->has('contact_number')) ? 'has-error' : ''}}" type="text" name="contact_number" placeholder="Official Mobile Number" required="">
+						@if ($errors->has('contact_number'))
+							<span style="color: palevioletred;">{{ $errors->first('contact_number') }}</span>
+						@endif
+					<input class="text {{ ($errors->has('address')) ? 'has-error' : ''}}" type="text" name="address" placeholder="Company Address" required="">
+						@if ($errors->has('address'))
+							<span style="color: palevioletred;">{{ $errors->first('address') }}</span>
+						@endif
+					<input class="text w3lpass {{ ($errors->has('password')) ? 'has-error' : ''}}" type="password" name="password" placeholder="Password" required="">
+						@if ($errors->has('password'))
+							<span style="color: palevioletred;">{{ $errors->first('password') }}</span>
+						@endif
+					<input class="text w3lpass" type="password" name="confirm_password" placeholder="Confirm Password" required="">
+						@if ($errors->has('confirm_password'))
+							<span style="color: palevioletred;">{{ $errors->first('confirm_password') }}</span>
+						@endif
+					<input type="hidden" name="_token" value="{{ csrf_token() }}">
 					<div class="wthree-text">  
 						<label class="anim">
 							<input type="checkbox" class="checkbox" required="">
@@ -22,7 +52,7 @@
 					</div>   
 					<input type="submit" value="SIGNUP">
 				</form>
-				<p>Have an Account? <a href="#"> Login Now!</a></p>
+				<p>Have an Account? <a href="{{url('/login')}}"> Login Now!</a></p>
 			</div>	 
 		</div>	
 		<!-- copyright -->

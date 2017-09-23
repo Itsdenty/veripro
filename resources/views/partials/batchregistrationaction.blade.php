@@ -1,0 +1,1 @@
+<li><a href="{{url('/batches')}}">Batch Registration</a></li>

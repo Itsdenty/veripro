@@ -15,3 +15,22 @@
 
 
 
+
+
+Route::get('/', function () {
+    return view('templates.register')->middleware('guest');
+});
+
+Route::get('login', 'UserController@getLogin')->name('getLogin')->middleware('guest');
+Route::post('login', 'UserController@postLogin')->name('postLogin')->middleware('guest');
+Route::get('product', 'ProductController@getProduct')->name('getProduct')->middleware('auth');
+Route::get('batches', 'ProductController@getBatches')->name('getBatches')->middleware('auth');
+Route::post('product', 'ProductController@createProduct')->name('createProduct')->middleware('auth');
+Route::post('batches', 'ProductController@generateVerification')->name('generateVerification')->middleware('auth');
+Route::post('signup', 'UserController@postSignup')->name('postSignup')->middleware('guest');
+Route::get('logout', 'UserController@logout')->name('logout')->middleware('auth');
+
+// Auth::routes();
+
+// Route::get('/home', 'HomeController@index')->name('home');
+
