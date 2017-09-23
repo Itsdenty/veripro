@@ -16,7 +16,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'company_name', 'official_email', 'password',
-        'phone_number', 
+        'contact_number', 'address', 
     ];
 
     /**
@@ -27,6 +27,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    
     public function products()
     {
       return  $this->hasMany('App\Product', 'user_id');

@@ -5,12 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Logic\Encryption;
+use Illuminate\Support\Facades\Validator;
+use App\ProductDetail;
+use Image;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    public function getProduct(){
+        return View('templates.productRegistration');
+    }
+    public function getBatches(){
+        $products = Product::all();
+        return View('templates.batchRegistration')->with('products', $products);
+    }
     public function createProduct(Request $request){
         $rules = array(
-            'product_name' => 'required',
+            'name' => 'required',
             'product_details' => 'required',
             'product_image' => 'required',
             'secret_key' => 'required|min:10'
@@ -20,15 +31,31 @@ class ProductController extends Controller
             return redirect()->back()->withErrors($validate)->withInput();
         } else {
         $data = $request->all();
+		$image = $request->file('product_image');
+        // dd($image);
+		$img = str_replace(' ', '-', $image->getClientOriginalName());
+		$cool = strlen($img);
+		if($cool > 40){
+          $initial = $cool-30;
+          $img = substr($img, $initial);
+		}
+                // dd($img);
+		$imagename = time() . "-" . $img;
+                //dd($imagename);
+		Image::make($image->getRealPath())->resize(640, 480, function ($constraint) {
+        $constraint->aspectRatio();})->save(public_path() . '/images/product/' . $imagename);
+		$image_url = '/images/product/' .$imagename;
+        $data['product_image'] = $image_url;
+        $data['user_id'] = Auth::user()->id;
         $product = new Product();
         $product->fill($data);
-        if($product->update()){
-            return  redirect()->back()->withSuccess('You have successfully updated your match');
+        if($product->save()){
+            return  redirect()->back()->with('success','You have successfully added your product');
         }
-            return  redirect()->back()->withFail('an error occured while trying to update your match')->withInput();   
+            return  redirect()->back()->withFail('fail', 'an error occured while trying to update your match')->withInput();   
         }
     }
-    public function generatePinVerifications(Request $request){
+    public function generateVerification(Request $request){
         $rules = array(
             'product_id' => 'required',
             'first_batch' => 'required',
@@ -43,18 +70,19 @@ class ProductController extends Controller
         $last_batch = $data['last_batch'];
         $product_id = $data['product_id'];
         $product = Product::find($product_id);
-        $current = [];
+        $secret = $this->getSalt();
+        $product->secret_key = $secret;
+        $product->update();
         for($i = $first_batch; $i < $last_batch; $i++){
             $batch_number = $i;
             $track_number = $product->name . '-' . $i;
             $encrypt = new Encryption;
-            $secret = $product->secret_key;
             $tracking_number = $encrypt->simple_encrypt($track_number,$secret);
             $data['tracking_number'] = $tracking_number;
             $data['batch_number'] = $batch_number;
             $product_details = new ProductDetail();
             $product_details->fill($data);
-            $current[] = $product_details;
+            $product_details->save();
         }
         $base_url = URL::to('/');
         $json_link = $base_url . '/verify/'.$product_id . '/' .$first_batch . '/' . $last_batch;
@@ -80,4 +108,15 @@ class ProductController extends Controller
         }
         return response()->json(['msg' => 'You have an original ' .$product_details->product->name .' with you, with a batch number of ' .$product->batch_number .' thank you for using veripro']);
     }
+    public function getSalt() {
+     $charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\][{}\'";:?.>,<!@#$%^&*()-_=+|';
+     $randStringLen = 64;
+
+     $randString = "";
+     for ($i = 0; $i < $randStringLen; $i++) {
+         $randString .= $charset[mt_rand(0, strlen($charset) - 1)];
+     }
+
+     return $randString;
+}
 }

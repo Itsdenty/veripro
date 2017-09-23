@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Logic\Encryption;
+namespace App\Logic;
 
-class Encrypt
+class Encryption
 {  
     public function simple_encrypt($text,$salt)
     {  
