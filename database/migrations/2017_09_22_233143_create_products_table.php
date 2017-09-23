@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
 			->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
             $table->string('security_key');
-            $table->string('product_details');
+            $table->text('product_details');
             $table->string('product_image');
             $table->timestamps();
         });

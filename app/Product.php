@@ -14,4 +14,7 @@ class Product extends Model
     {
         $this->belongsTo('App\User', 'user_id');
     }
+    protected $fillable = [
+        'product_id', 'batch_number', 'trading_number' 
+    ];
 }
